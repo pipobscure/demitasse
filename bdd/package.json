@@ -1,0 +1,27 @@
+{
+  "name": "@pipobscure/demitasse",
+  "version": "1.0.10",
+  "description": "Simple BDD Testing",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx -p typescript tsc && cp -f dist/notifier.d.ts lib/",
+    "watch": "npx -p typescript tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "bdd",
+    "testing"
+  ],
+  "author": "Philipp Dunkel <pip@pipobscure.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipobscure/demitasse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pipobscure/demitasse/issues"
+  },
+  "homepage": "https://github.com/pipobscure/demitasse#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}

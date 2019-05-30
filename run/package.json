@@ -1,0 +1,32 @@
+{
+  "name": "@pipobscure/demitasse-run",
+  "version": "1.0.10",
+  "description": "Simple BDD Testing - Runner",
+  "main": "index.js",
+  "bin": {
+    "demitasse": "./demitasse.js"
+  },
+  "scripts": {},
+  "keywords": [
+    "bdd",
+    "testing"
+  ],
+  "author": "Philipp Dunkel <pip@pipobscure.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipobscure/demitasse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pipobscure/demitasse/issues"
+  },
+  "homepage": "https://github.com/pipobscure/demitasse#readme",
+  "devDependencies": {
+    "@types/glob": "^7.1.1"
+  },
+  "dependencies": {
+    "@pipobscure/options": "^1.0.0",
+    "@pipobscure/demitasse": "^1.0.0",
+    "glob": "^7.1.3"
+  }
+}

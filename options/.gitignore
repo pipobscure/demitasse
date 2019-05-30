@@ -1,0 +1,4 @@
+node_modules/
+.vscode/
+*.d.ts
+index.js*
