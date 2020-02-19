@@ -94,7 +94,7 @@ class Pretty implements Notifier {
 }
 
 function pad(num: number): string {
-  return `      ${num}`.slice(-4);
+  return `       ${num}`.slice(-5);
 }
 
 export const reporter = new Pretty((line) => console.log(line));
