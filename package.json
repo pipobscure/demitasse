@@ -1,71 +1,39 @@
 {
-  "name": "@pipobscure/bdd-bundles",
-  "version": "1.0.10",
-  "description": "Simple BDD Testing Bundles",
-  "directories": {
-    "test": "test"
-  },
+  "name": "@pipobscure/demitasse",
+  "version": "2.0.0",
+  "description": "Miniscule BDD Testing Framework",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test:none": "node run/demitasse.js -g -d test/*",
-    "test:json": "node run/demitasse.js -g -d --style=json test/*",
-    "test:tap": "node run/demitasse.js -g -d --style=tap test/*",
-    "test:pretty": "node run/demitasse.js -g -d --style=pretty test/*",
-    "test:fail": "env FAIL=1 node run/demitasse.js -g -d test/*",
-    "test": "npm run test:none && npm run test:json && npm run test:tap && npm run test:pretty",
-    "build": "for MOD in bdd tap pretty json; do pushd $MOD; npm run build; popd; done",
-    "watch": "for MOD in bdd tap pretty json; do pushd $MOD; npm run watch & popd; done",
-    "install": "for MOD in bdd run tap pretty json; do pushd $MOD; npm install; popd; done",
-    "publish:options": "pushd options && npm install && npm publish && popd",
-    "publish:bdd": "pushd bdd && npm install && npm publish && popd",
-    "publish:run": "pushd run && npm install && npm publish && popd",
-    "publish:tap": "pushd tap && npm install && npm publish && popd",
-    "publish:pretty": "pushd pretty && npm install && npm publish && popd",
-    "publish:json": "pushd json && npm install && npm publish && popd",
-    "publish": "node version.js && npm run publish:options && npm run publish:bdd && npm run publish:run && npm run publish:tap && npm run publish:pretty && npm run publish:json"
+    "test": "tsc && node runner.js --global test/*.js",
+    "prepublishOnly": "tsc"
   },
+  "bin": {
+    "demitasse": "runner.js"
+  },
+  "keywords": [
+    "BDD",
+    "Testing"
+  ],
+  "engines": {
+    "node": ">=13.11.0"
+  },
+  "dependencies": {
+    "glob": "^7.1.6"
+  },
+  "author": "Philipp Dunkel <pip@pipobscure.com>",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pipobscure/demitasse.git"
   },
-  "keywords": [
-    "bdd",
-    "testing"
-  ],
-  "author": "Philipp Dunkel <pip@pipobscure.com>",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/pipobscure/demitasse/issues"
   },
   "homepage": "https://github.com/pipobscure/demitasse#readme",
   "devDependencies": {
-    "@pipobscure/demitasse": "file:bdd",
-    "@pipobscure/demitasse-pretty": "file:pretty",
-    "@pipobscure/demitasse-run": "file:run",
-    "@pipobscure/demitasse-tap": "file:tap",
-    "@pipobscure/demitasse-json": "file:json",
-    "husky": "^1.3.1",
-    "lint-staged": "^8.1.0",
-    "prettier": "^1.15.3",
-    "typescript": "^3.2.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "node version.js && find . -name 'package.json' | grep -v node_modules | xargs git add README.md LICENSE.md RATIONALE.md && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts,js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "printWidth": 120,
-    "trailingComma": "none",
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": true,
-    "bracketSpacing": true,
-    "arrowParens": "always"
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.12.31",
+    "typescript": "^3.8.3"
   }
 }

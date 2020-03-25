@@ -10,24 +10,12 @@ Simple and small test-framework for node stuff that's basically half of [Mocha](
 npm install --save-dev @pipobscure/demitasse
 ```
 
-To use TAP output:
-
-```bash
-npm install --save-dev @pipobscure/demitasse-tap
-```
-
-or alternatively for Pretty output
-
-```bash
-npm install --save-dev @pipobscure/demitasse-pretty
-```
-
 ## Usage
 
 _basic-test.js_
 
 ```javascript
-import { define, it, before, beforeEach, afterEach, after } from '@pipobscure/bdd';
+import { define, it, before, beforeEach, afterEach, after } from '@pipobscure/demitasse';
 describe('suite 1', () => {
   it('assertion 1', () => {
     // assert something
@@ -36,33 +24,18 @@ describe('suite 1', () => {
     // assert something
   });
 });
-describe('suite 2', () => {
-  it('assertion 1', () => {
-    // assert something
-  });
-  it('assertion 2', () => {
-    // assert something
-  });
-});
 ```
 
 ```bash
-npx -p @pipobscure/demitasse-run demitasse basic-test.js
+npx -p @pipobscure/demitasse basic-test.js
 ```
 
-`demitasse` has a few options:
+`demitasse` has an option to put the functions into the global objects, which enables it to run mocha tests which don't import the library.
 
-> demitasse [options][arguments]
-> --describe / -d : describe separate files
-> --global / -g : put functions into global
-> --flat / -f : flatten the test structure
-> --style=<value> : oputput style [tap | pretty | <module>](default: 'tap')
-
-The `--describe` option wraps each file in a separate describe increasing the level of the test tree in case there are multiple test-files to be run.
+> demitasse [--global] [glob-pattern]
+> --global : put functions into global object
 
 The `--global` option puts `describe`, `it`, `before`, `beforeEach`, `afterEach`, `after` into the global object, so that test-drivers don't need to require them.
-
-The `--style=` option allows for a choice in output. These need to be installed separately.
 
 ## Motivation
 

@@ -1,2 +1,6 @@
+
+package-lock.json
 node_modules/
 coverage/
+*.js
+*.d.ts
