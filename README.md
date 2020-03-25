@@ -32,8 +32,8 @@ npx -p @pipobscure/demitasse basic-test.js
 
 `demitasse` has an option to put the functions into the global objects, which enables it to run mocha tests which don't import the library.
 
-> demitasse [--global][arguments]
-> --global / -g : put functions into global object
+> demitasse [--global] [glob-pattern]
+> --global : put functions into global object
 
 The `--global` option puts `describe`, `it`, `before`, `beforeEach`, `afterEach`, `after` into the global object, so that test-drivers don't need to require them.
 
