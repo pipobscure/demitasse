@@ -18,7 +18,7 @@ run(args[0] || 'test/**/*.@(mjs|js)').then(
     (error) => { console.error(error); process.exit(2); }
 );
 
-async function run(pattern) {
+async function run(pattern: string) {
     const files = await findFiles(pattern);
     if (!files.length) throw new Error(`no files found for ${pattern}`);
 
@@ -38,18 +38,18 @@ async function run(pattern) {
     return !failed;
 }
 
-function runFile(file, indent) {
+function runFile(file: string, indent: string) : Promise<number> {
     return new Promise((resolve, reject) => {
         const args = ['--no-warnings'];
         if (global) {
             args.push(path.join(__dirname, 'global.js'));
         }
         const child = spawn(process.argv0, [ ...args, file], { stdio: ['ignore', 'pipe', 'inherit'], windowsHide: true });
-        let buffer = '';
+        let buffer : string = '';
         child.stdout.on('data', (chunk) => {
             buffer += chunk.toString('utf-8');
             const lines = buffer.split(/\r?\n/);
-            buffer = lines.pop();
+            buffer = lines.pop() as string;
             lines.forEach((line)=>writeLine(line, indent));
         });
         child.on('error', reject);
@@ -61,16 +61,16 @@ function runFile(file, indent) {
     });
 }
 
-function findFiles(...args) {
+function findFiles(pattern: string) : Promise<string[]> {
     return new Promise((resolve, reject) => {
-        glob(...args, (err, files) => {
+        glob(pattern, (err, files) => {
             if (err) return reject(err);
             resolve(files);
         });
     });
 }
 
-function writeLine(line, indent = '') {
+function writeLine(line: string, indent: string = '') {
     if (/^\s*$/.test(line)) return;
     if (/^TAP\s+version\s+\d+/.test(line)) return;
     if (/^#\s+(?:Tests|Skipped|Passed|Failed):/.test(line)) return;

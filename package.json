@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node runner.js --global test/*.js"
+    "test": "tsc && node runner.js --global test/*.js",
+    "prepublishOnly": "tsc"
   },
   "bin": {
     "demitasse": "runner.js"
@@ -14,6 +15,9 @@
     "BDD",
     "Testing"
   ],
+  "engines": {
+    "node": ">=13.11.0"
+  },
   "dependencies": {
     "glob": "^7.1.6"
   },
@@ -26,5 +30,10 @@
   "bugs": {
     "url": "https://github.com/pipobscure/demitasse/issues"
   },
-  "homepage": "https://github.com/pipobscure/demitasse#readme"
+  "homepage": "https://github.com/pipobscure/demitasse#readme",
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.12.31",
+    "typescript": "^3.8.3"
+  }
 }
