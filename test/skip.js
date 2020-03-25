@@ -1,4 +1,3 @@
-import { describe, it } from '../index.js';
 import assert from 'assert';
 
 describe('Skipping', () => {

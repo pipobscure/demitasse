@@ -1,4 +1,3 @@
-import { describe, it, timeout } from '../index.js';
 import { exec } from './utils/exec.js';
 import { equal } from 'assert';
 

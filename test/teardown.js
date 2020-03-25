@@ -1,4 +1,3 @@
-import { describe, it, after, afterEach } from '../index.js';
 import assert from 'assert';
 import { exec } from './utils/exec.js';
 

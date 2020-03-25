@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node runner.js test/*.js"
+    "test": "node runner.js --global test/*.js"
   },
   "bin": {
     "demitasse": "runner.js"
