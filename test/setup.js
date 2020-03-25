@@ -1,40 +1,28 @@
-describe('before', () => {
-  let prepared = false;
-  before(() => {
-    prepared = true;
-    return Promise.resolve();
-  });
-  it('has been prepared', () => {
-    assert(prepared);
-  });
-});
-describe('beforeEach', () => {
-  let cnt = 0;
-  beforeEach(() => {
-    cnt++;
-  });
-  it('test 1', () => {
-    assert.equal(cnt, 1);
-    return Promise.resolve();
-  });
-  it('test 2', () => {
-    assert.equal(cnt, 2);
-    return Promise.resolve();
-  });
-  it('test 3', () => {
-    assert.equal(cnt, 3);
-    return Promise.resolve();
-  });
-  it('test 4', () => {
-    assert.equal(cnt, 4);
-    return Promise.resolve();
-  });
-  it('test 5', () => {
-    assert.equal(cnt, 5);
-    return Promise.resolve();
-  });
-  it('test 6', () => {
-    assert.equal(cnt, 6);
-    return Promise.resolve();
-  });
+import { describe, it, before, beforeEach } from '../index.js';
+import assert from 'assert';
+import { exec } from './utils/exec.js';
+
+describe('setup', () => {
+    let prepped = false;
+    let count = 0;
+    before(()=>{
+        prepped = true;
+    });
+    beforeEach(()=>{
+        count += 1;
+    });
+    it('run', ()=>{
+        assert(prepped);
+        assert.equal(count, 1);
+    });
+    it('run', () => {
+        assert(prepped);
+        assert.equal(count, 2);
+    });
+    it('run', () => {
+        assert(prepped);
+        assert.equal(count, 3);
+    });
+    it('fail before', async () => assert.equal(await exec('test/subtests/before.js'), 3));
+    it('fail beforeEach', async () => assert.equal(await exec('test/subtests/beforeeach.js'), 3));
 });
