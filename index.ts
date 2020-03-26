@@ -1,6 +1,6 @@
 let output = (...args: any[]) => console.log(...args);
 let logout = (...args: any[]) => console.error(...args);
-let reporter = () => new Reporter();
+let reporter: () => Reporter = () => new TAPReporter();
 let autorun = true;
 let itemtimeout = 2500;
 let print = false;
@@ -46,7 +46,17 @@ export class AssertionError extends Error {
   actual?: any;
   expected?: any;
 }
-export class Reporter {
+
+export interface Walker {
+  enter(item: TestSuite): void;
+  case(item: TestCase): void;
+  exit(item: TestSuite): void;
+}
+export interface Reporter extends Walker {
+  bailed: boolean;
+  report(item: TestCase, status: 'ok' | 'not ok' | 'skipped', error?: AssertionError): void;
+}
+export class TAPReporter implements Reporter {
   constructor() {
     this.indent = '';
     output('TAP version 13');
@@ -55,6 +65,7 @@ export class Reporter {
   private summary = { passed: 0, failed: 0, skipped: 0 };
   public bailed: boolean = false;
   private indent: string = '';
+  case(item: TestCase) {}
   report(item: TestCase, status: 'ok' | 'not ok' | 'skipped', error?: AssertionError) {
     const indent = this.indent + new Array(Math.max(0, this.stack.length - 1)).fill('  ').join('');
     if (!this.bailed && this.stack.length && !!~this.stack[0].items.indexOf(item)) {
@@ -107,7 +118,8 @@ export class Reporter {
       }
     }
   }
-  enter(item: TestSuite, items: TestCase[]) {
+  enter(item: TestSuite) {
+    const items = Array.from(item);
     let indent = this.indent + new Array(Math.max(0, this.stack.length - 1)).fill('  ').join('');
     output(`${indent}# ${item.label}`);
     this.stack.unshift({ item, count: 0, items });
@@ -227,7 +239,7 @@ class TestSuite extends TestCase {
       return true;
     }
     let state = true;
-    context.enter(this, this._test);
+    context.enter(this);
 
     if (!(await this.executeList(context, this._before))) {
       context.bailed = true;
@@ -270,6 +282,10 @@ class TestSuite extends TestCase {
     for (let item of this._test) {
       item.print(`${indent}  `);
     }
+  }
+
+  [Symbol.iterator]() {
+    return this._test[Symbol.iterator]();
   }
 }
 
@@ -381,6 +397,18 @@ export function main() {
       logout(error.stack);
       return false;
     });
+}
+
+export function skeleton(walker: Walker, items: TestCase[] = root) {
+  for (let item of items) {
+    if (item instanceof TestSuite) {
+      walker.enter(item);
+      skeleton(walker, Array.from(item));
+      walker.exit(item);
+    } else {
+      walker.case(item);
+    }
+  }
 }
 
 if ('undefined' !== typeof process) process.on('beforeExit', () => process.exit(success ? 0 : 1));
