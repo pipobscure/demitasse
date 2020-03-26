@@ -156,7 +156,7 @@ class TestCase {
     this.skipped = false;
     this.timeout = itemtimeout;
   }
-  public readonly label: string;
+  public label: string;
   private readonly run: asserter;
   public skipped: boolean = false;
   public timeout: number;
@@ -340,6 +340,7 @@ export function describe(label: string, runner: describer) {
   }
   const result = {
     skip: () => ((item.skipped = true), result),
+    todo: () => ((item.skipped = true), (item.label += ' # todo'), result),
     only: () => (cur && cur.only(item), result)
   };
   return result;
@@ -363,6 +364,7 @@ export function it(label: string, runner: asserter) {
   cur.test(item);
   const result = {
     skip: () => ((item.skipped = true), result),
+    todo: () => ((item.skipped = true), (item.label += ' # todo'), result),
     only: () => (cur.only(item), result),
     timeout: (ms: number) => ((item.timeout = ms), result)
   };
