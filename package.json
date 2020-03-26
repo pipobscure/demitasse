@@ -1,12 +1,14 @@
 {
   "name": "@pipobscure/demitasse",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Miniscule BDD Testing Framework",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "tsc && node runner.js --global test/*.js",
-    "prepublishOnly": "tsc"
+    "build": "tsc",
+    "test": "npm run build && node runner.js --global test/*.js",
+    "clean": "npx shx rm -f *.js *.d.ts",
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "demitasse": "runner.js"
@@ -18,9 +20,6 @@
   "engines": {
     "node": ">=13.11.0"
   },
-  "dependencies": {
-    "glob": "^7.1.6"
-  },
   "author": "Philipp Dunkel <pip@pipobscure.com>",
   "license": "ISC",
   "repository": {
@@ -31,9 +30,35 @@
     "url": "https://github.com/pipobscure/demitasse/issues"
   },
   "homepage": "https://github.com/pipobscure/demitasse#readme",
+  "dependencies": {
+    "glob": "^7.1.6"
+  },
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/node": "^12.12.31",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.9",
+    "prettier": "^2.0.2",
     "typescript": "^3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "none",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "arrowParens": "always"
   }
 }
