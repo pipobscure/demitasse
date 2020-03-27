@@ -13,7 +13,7 @@ class Cancelable<T> extends Promise<T> {
 }
 
 export interface asserter {
-  (): Promise<void>;
+  (): Promise<void> | void;
 }
 export interface describer {
   (): void;

@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { describe, it } from '../';
 
 describe('Skipping', () => {
   it.skip('should be skipped', () => assert(false));

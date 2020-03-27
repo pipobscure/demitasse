@@ -1,4 +1,5 @@
 import assert from 'assert';
+import {describe, it } from '../';
 
 describe('only', () => {
   describe('Only', () => {

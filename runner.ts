@@ -4,16 +4,11 @@ import glob from 'glob';
 import { spawn } from 'child_process';
 import * as path from 'path';
 
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const args = process.argv.slice(2);
 const globalize = args[0] === '--global';
 if (globalize) args.shift();
 
-run(args[0] || 'test/**/*.@(mjs|js)').then(
+run(args[0] || 'test/**/*.js').then(
   (success) => process.exit(success ? 0 : 1),
   (error) => {
     console.error(error);
@@ -45,9 +40,10 @@ function runFile(file: string, indent: string): Promise<number> {
   return new Promise((resolve, reject) => {
     const args = ['--no-warnings'];
     if (global) {
-      args.push(path.join(__dirname, 'global.js'));
+      args.push(path.join(__dirname, `global.js`));
     }
-    const child = spawn(process.argv0, [...args, file], { stdio: ['ignore', 'pipe', 'inherit'], windowsHide: true });
+    args.push(path.resolve(file));
+    const child = spawn(process.argv0, args, { stdio: ['ignore', 'pipe', 'inherit'], windowsHide: true });
     let buffer: string = '';
     child.stdout.on('data', (chunk) => {
       buffer += chunk.toString('utf-8');
