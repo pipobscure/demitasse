@@ -185,6 +185,9 @@ class TestCase {
     context.report(this, 'ok');
     return true;
   }
+  propagateSkip(skipped: boolean) {
+    this.skipped = this.skipped || skipped;
+  }
   print(indent = '') {
     output(`${indent}${this.label} ${this.skipped ? ' # skip' : ' # run'}`);
   }
@@ -207,7 +210,7 @@ class TestSuite extends TestCase {
   }
   test(item: TestCase) {
     this._test.push(item);
-    item.skipped = !!(this._only && this._only !== item);
+    item.skipped = item.skipped || !!(this._only && this._only !== item);
   }
   afterEach(item: TestCase) {
     this._afterEach.push(item);
@@ -221,7 +224,13 @@ class TestSuite extends TestCase {
     if (!this._test.includes(item)) throw new Error(`invalid invocation: only not added "${item.label}"`);
     this._only = item;
     for (let item of this._test) {
-      item.skipped = !!(this._only && this._only !== item);
+      item.skipped = item.skipped || !!(this._only && this._only !== item);
+    }
+  }
+  propagateSkip(skipped: boolean) {
+    this.skipped = this.skipped || skipped;
+    for (const item of this._test) {
+      item.propagateSkip(this.skipped);
     }
   }
   async executeList(context: Reporter, list: TestCase[]) {
@@ -234,39 +243,32 @@ class TestSuite extends TestCase {
   }
   async execute(context: Reporter) {
     if (context.bailed) return false;
-    if (this.skipped) {
-      context.report(this, 'skipped');
-      return true;
-    }
+
     let state = true;
     context.enter(this);
 
-    if (!(await this.executeList(context, this._before))) {
+    if (!this.skipped && !(await this.executeList(context, this._before))) {
       context.bailed = true;
       state = false;
     }
 
     if (!context.bailed) {
       for (let item of this._test) {
-        if (item.skipped) {
-          context.report(item, 'skipped');
-          continue;
-        }
-        if (!(await this.executeList(context, this._beforeEach))) {
+        if (!item.skipped && !(await this.executeList(context, this._beforeEach))) {
           context.bailed = true;
           continue;
         }
         if (!(await item.execute(context))) {
           state = false;
         }
-        if (!(await this.executeList(context, this._afterEach))) {
+        if (!item.skipped && !(await this.executeList(context, this._afterEach))) {
           context.bailed = true;
           continue;
         }
       }
     }
 
-    if (!context.bailed) {
+    if (!this.skipped && !context.bailed) {
       if (!(await this.executeList(context, this._after))) {
         context.bailed = true;
         state = false;
@@ -274,8 +276,13 @@ class TestSuite extends TestCase {
     }
 
     context.exit(this);
-    context.report(this, state ? 'ok' : 'not ok');
-    return state;
+    if (this.skipped) {
+      context.report(this, 'skipped');
+      return true;
+    } else {
+      context.report(this, state ? 'ok' : 'not ok');
+      return state;
+    }
   }
   print(indent = '') {
     output(`${indent}${this.label} ${this.skipped ? ' # skip' : ' # run'}`);
@@ -315,15 +322,16 @@ export function configure(options: ConfigOptions = {}) {
 
 export function describe(label: string, runner: describer) {
   if (autorun && stack && !stack.length) throw new Error('only 1 top-level describe allowed');
-  stack = stack || [];
   const item = new TestSuite(label);
+  if (!stack || !stack.length) root.push(item);
+  stack = stack || [];
   const cur = stack[0];
   cur && cur.test(item);
   stack.unshift(item);
   runner();
   stack.shift();
-  root.push(item);
   if (autorun && !stack.length) {
+    item.propagateSkip(false);
     if (print) {
       item.print();
     } else {
@@ -390,6 +398,7 @@ export function main() {
   const suite = new TestSuite('');
   root.forEach((item) => suite.test(item));
   const context = reporter();
+  suite.propagateSkip(false);
   return suite
     .execute(context)
     .then((result) => {
