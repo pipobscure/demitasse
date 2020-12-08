@@ -1,6 +1,6 @@
 {
   "name": "@pipobscure/demitasse",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Miniscule BDD Testing Framework",
   "main": "index.js",
   "scripts": {
